@@ -25,11 +25,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authz) -> authz
                 .antMatchers("/login", "/users/*").permitAll()
                 .antMatchers("/v2/api-docs",
-                        "/configuration/ui",
                         "/swagger-resources/**",
-                        "/configuration/security",
-                        "/swagger-ui/*",
-                        "/webjars/**")
+                        "/swagger-ui/*")
                 .permitAll()
                 .antMatchers("/health-check" ).permitAll()
                 .anyRequest().authenticated());
