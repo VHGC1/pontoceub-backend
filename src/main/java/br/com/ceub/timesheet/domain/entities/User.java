@@ -8,18 +8,19 @@ import java.util.List;
 @Data
 @Table(name = "users")
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", length = 100, nullable = false)
     private String name;
 
-    @Column(name = "email", length = 100, nullable = false)
-    private String email;
-
     @Column(name = "password", length = 100, nullable = false)
     private String password;
+
+    @Column(name = "email", length = 100, nullable = false)
+    private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",

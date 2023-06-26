@@ -5,7 +5,6 @@ import br.com.ceub.timesheet.domain.dtos.LoginResponse;
 import br.com.ceub.timesheet.domain.entities.User;
 import br.com.ceub.timesheet.exception.AppError;
 import br.com.ceub.timesheet.exception.AppException;
-import br.com.ceub.timesheet.exception.EmailInvalidoException;
 import br.com.ceub.timesheet.repository.UserRepository;
 import br.com.ceub.timesheet.security.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,14 +40,12 @@ public class LoginService {
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
-        Optional<User> findUserByEmail = userRepository.findByEmail(loginRequest.email());
+        Optional<User> user = userRepository.findByEmail(loginRequest.email());
 
-        if(findUserByEmail.isEmpty()) {
-            throw new EmailInvalidoException("Senha incorreta ou email inexistente");
+        if(user.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha incorreta ou email inexistente");
         }
 
-        User user = userService.findByEmail(loginRequest.email()).get();
-
-        return new LoginResponse(tokenReturn(loginRequest), user);
+        return new LoginResponse(tokenReturn(loginRequest), user.get());
     }
 }

@@ -23,13 +23,14 @@ public class SecurityConfig {
         http.cors();
 
         http.authorizeHttpRequests((authz) -> authz
-                .antMatchers("/login", "/users/*").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/login", "/users/*", "/").permitAll()
                 .antMatchers("/v2/api-docs",
                         "/swagger-resources/**",
                         "/swagger-ui/*")
-                .permitAll()
-                .antMatchers("/health-check" ).permitAll()
-                .anyRequest().authenticated());
+                .permitAll());
+
+        http.headers().frameOptions().disable();
 
         http = http
                 .sessionManagement()
