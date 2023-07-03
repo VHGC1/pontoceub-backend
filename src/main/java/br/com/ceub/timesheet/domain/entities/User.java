@@ -27,4 +27,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", foreignKey=@ForeignKey(name="fk_users_roles_user")),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", foreignKey=@ForeignKey(name="fk_users_roles_role")))
     private List<Role> roles;
+
+    @OneToMany(mappedBy = "userId", fetch = FetchType.LAZY)
+    private List<Classes> classes;
 }

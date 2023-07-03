@@ -16,5 +16,4 @@ public class UserCreateRequest {
 
     @NotEmpty(message = "Senha deve ser preenchida")
     private String password;
-    private List<Role> roles;
 }

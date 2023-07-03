@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,20 +38,11 @@ public class UserService {
 
         List<Role> roles = new ArrayList<>();
 
-        if (user.getRoles().size() > 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "É permitido somente um role por usuario");
-        }
+        Role role = new Role();
 
-        for (int i = 0; i < user.getRoles().size(); i++) {
-            Role role = new Role();
-            if(!rolesDic.containsKey(user.getRoles().get(i).getName())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Role não existente");
-            }
-
-            role.setId(rolesDic.get(user.getRoles().get(i).getName()));
-            role.setName(user.getRoles().get(i).getName());
-            roles.add(role);
-        }
+        role.setId(1);
+        role.setName("ROLE_NORMAL_USER");
+        roles.add(role);
 
         User novoUser = new User();
 
@@ -71,4 +63,6 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+
 }
