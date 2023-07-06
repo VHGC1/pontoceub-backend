@@ -1,5 +1,6 @@
 package br.com.ceub.timesheet.service;
 
+import br.com.ceub.timesheet.domain.dtos.UserClassesResponse;
 import br.com.ceub.timesheet.domain.dtos.UserCreateRequest;
 import br.com.ceub.timesheet.domain.dtos.UserCreateResponse;
 import br.com.ceub.timesheet.domain.entities.Role;
@@ -63,6 +64,4 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
-
 }

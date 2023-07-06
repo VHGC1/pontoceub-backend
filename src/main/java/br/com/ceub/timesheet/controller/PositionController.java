@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.security.RolesAllowed;
 
 @RestController
 @RequestMapping("/position-check")
+@RolesAllowed({"ROLE_BACKOFFICE_USER", "ROLE_ADMIN_USER"})
 public class PositionController {
     @Autowired
     private PositionService positionService;

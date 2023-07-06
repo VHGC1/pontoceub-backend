@@ -1,10 +1,12 @@
 package br.com.ceub.timesheet.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -15,8 +17,7 @@ public class Classes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Setter(AccessLevel.NONE)
-    @Column(name = "userId", nullable = false, insertable = false, updatable = false)
+    @Column(name = "userId", nullable = false)
     private Long userId;
 
     @Column(name = "course", length = 5, nullable = false)
@@ -31,15 +32,17 @@ public class Classes {
     @Column(name = "turn", length = 10, nullable = false)
     private String turn;
 
-    @Column(name = "schedule", length = 65, nullable = false)
-    private String schedule;
+    @Column(name = "scheduleFirstClass", length = 32, nullable = false)
+    private String scheduleFirstClass;
 
+    @Column(name = "scheduleSecondClass", length = 32, nullable = false)
+    private String scheduleSecondClass;
+
+    @JsonFormat(pattern="dd-MM-yyyy")
     @Column(name = "toBegin", length = 10, nullable = false)
     private Date begin;
 
+    @JsonFormat(pattern="dd-MM-yyyy")
     @Column(name = "toEnd", length = 10, nullable = false)
     private Date end;
-
-    @Column(name = "students", length = 2, nullable = false)
-    private Integer students;
 }
