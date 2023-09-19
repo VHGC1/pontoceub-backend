@@ -14,8 +14,12 @@ import java.util.List;
 @RequestMapping("/classes")
 //@RolesAllowed({"ROLE_BACKOFFICE_USER", "ROLE_ADMIN_USER"})
 public class ClassesController {
-    @Autowired
-    private UserClassesService userClassesService;
+
+    private final UserClassesService userClassesService;
+
+    public ClassesController(UserClassesService userClassesService) {
+        this.userClassesService = userClassesService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserClassesResponse> getUserClasses(@PathVariable("id") Long id) {

@@ -17,24 +17,32 @@ import java.util.Optional;
 
 @Service
 public class LoginService {
-    @Autowired
-    private JwtHelper jwtHelper;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final JwtHelper jwtHelper;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final UserService userService;
+
+
+    private final UserRepository userRepository;
+
+    public LoginService(JwtHelper jwtHelper, PasswordEncoder passwordEncoder, UserService userService, UserRepository userRepository) {
+        this.jwtHelper = jwtHelper;
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
+        this.userRepository = userRepository;
+    }
+
     public String tokenReturn(LoginRequest loginRequest) {
         Optional<User> user = userService.findByEmail(loginRequest.email());
 
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw AppException.of(AppError.INVALID_CREDENTIALS);
         }
 
         boolean passwordIsValid = passwordEncoder.matches(loginRequest.password(), user.get().getPassword());
-        if(!passwordIsValid) throw AppException.of(AppError.INVALID_CREDENTIALS);
+        if (!passwordIsValid) throw AppException.of(AppError.INVALID_CREDENTIALS);
 
         return jwtHelper.createJwt(user.get());
     }
@@ -42,7 +50,7 @@ public class LoginService {
     public LoginResponse login(LoginRequest loginRequest) {
         Optional<User> user = userRepository.findByEmail(loginRequest.email());
 
-        if(user.isEmpty()) {
+        if (user.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha incorreta ou email inexistente");
         }
 

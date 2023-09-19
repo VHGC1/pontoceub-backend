@@ -1,17 +1,12 @@
 package br.com.ceub.timesheet.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
-@Data
 @Table(name = "classes")
+@Data
 public class Classes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,17 +27,15 @@ public class Classes {
     @Column(name = "turn", length = 10, nullable = false)
     private String turn;
 
-    @Column(name = "scheduleFirstClass", length = 32, nullable = false)
-    private String scheduleFirstClass;
+    @Column(name = "day_first_class", length = 15, nullable = false)
+    private String dayFirstClass;
 
-    @Column(name = "scheduleSecondClass", length = 32, nullable = false)
-    private String scheduleSecondClass;
+    @Column(name = "hour_first_class", length = 15, nullable = false)
+    private String hourFirstClass;
 
-    @JsonFormat(pattern="dd-MM-yyyy")
-    @Column(name = "toBegin", length = 10, nullable = false)
-    private Date begin;
+    @Column(name = "day_second_class", length = 15, nullable = false)
+    private String daySecondClass;
 
-    @JsonFormat(pattern="dd-MM-yyyy")
-    @Column(name = "toEnd", length = 10, nullable = false)
-    private Date end;
+    @Column(name = "hour_second_class", length = 15, nullable = false)
+    private String hourSecondClass;
 }

@@ -16,11 +16,14 @@ import java.util.List;
 @Service
 public class UserClassesService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private ClassesRepository classesRepository;
+    private final ClassesRepository classesRepository;
+
+    public UserClassesService(UserRepository userRepository, ClassesRepository classesRepository) {
+        this.userRepository = userRepository;
+        this.classesRepository = classesRepository;
+    }
 
     public UserClassesResponse userClasses(Long id) {
         User result = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não encontrado ou inexistente!"));
@@ -46,10 +49,10 @@ public class UserClassesService {
             newClasses.setDiscipline(classes.get(i).getDiscipline());
             newClasses.setCampus(classes.get(i).getCampus());
             newClasses.setTurn(classes.get(i).getTurn());
-            newClasses.setScheduleFirstClass(classes.get(i).getScheduleFirstClass());
-            newClasses.setScheduleSecondClass(classes.get(i).getScheduleSecondClass());
-            newClasses.setBegin(classes.get(i).getBegin());
-            newClasses.setEnd(classes.get(i).getEnd());
+            newClasses.setDayFirstClass(classes.get(i).getDayFirstClass());
+            newClasses.setHourFirstClass(classes.get(i).getHourFirstClass());
+            newClasses.setDaySecondClass(classes.get(i).getDaySecondClass());
+            newClasses.setHourSecondClass(classes.get(i).getHourSecondClass());
 
             result.getClasses().add(newClasses);
             classesRepository.save(newClasses);

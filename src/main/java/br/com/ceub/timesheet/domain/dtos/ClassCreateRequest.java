@@ -12,8 +12,10 @@ public class ClassCreateRequest {
     private String discipline;
     private String campus;
     private String turn;
-    private String scheduleFirstClass;
-    private String scheduleSecondClass;
+    private String dayFirstClass;
+    private String hourFirstClass;
+    private String daySecondClass;
+    private String hourSecondClass;
     @JsonFormat(pattern="dd-MM-yyyy")
     private Date begin;
     @JsonFormat(pattern="dd-MM-yyyy")
