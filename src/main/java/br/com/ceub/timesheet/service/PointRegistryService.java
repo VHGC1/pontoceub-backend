@@ -1,7 +1,6 @@
 package br.com.ceub.timesheet.service;
 
 import br.com.ceub.timesheet.Utils.ActivityType;
-import br.com.ceub.timesheet.Utils.ClassesAux;
 import br.com.ceub.timesheet.domain.dtos.PointRegistryCreateRequest;
 import br.com.ceub.timesheet.domain.entities.Classes;
 import br.com.ceub.timesheet.domain.entities.PointRegistry;
@@ -12,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,65 +49,44 @@ public class PointRegistryService {
         }
 
         PointRegistry pointRegistry = new PointRegistry();
-        LocalDateTime now = LocalDateTime.now();
+//        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime now = LocalDateTime.of(2023, Month.SEPTEMBER, 4, 20, 51);
 
         pointRegistry.setUserId(user.getId());
         pointRegistry.setDateTimeRegistry(now);
 
-        pointRegistry.setActivityType(activityEntryType(now, user.getClasses()));
+        setActivityEntryType(now, user.getClasses(), pointRegistry);
 
         PointRegistry savedRegistry = pointRegistryRepository.save(pointRegistry);
 
         return ResponseEntity.ok(savedRegistry);
     }
 
-    public ActivityType activityEntryType(LocalDateTime localDateTime, List<Classes> userClasses) {
+    public void setActivityEntryType(LocalDateTime localDateTime, List<Classes> userClasses, PointRegistry pointRegistry) {
         String today = String.valueOf(localDateTime.getDayOfWeek());
 
         List<Classes> todayClasses = new ArrayList<>();
 
+
         for (Classes userClass : userClasses) {
-            if (userClass.getDayFirstClass().toUpperCase().equals(dayOfTheWeek(today)) ||
-                    userClass.getDaySecondClass().toUpperCase().equals(dayOfTheWeek(today))) {
+            if (userClass.getClassDay().toUpperCase().equals(dayOfTheWeek(today))) {
                 todayClasses.add(userClass);
             }
         }
-        return entryType(todayClasses, localDateTime, today);
+
+        Classes classes = actualClass(todayClasses, localDateTime);
+
+        pointRegistry.setActivity(classes.getDiscipline());
+        pointRegistry.setActivityType(activityType(classes, localDateTime, pointRegistry.getUserId()));
     }
 
-
-    private ActivityType entryType(List<Classes> userClass, LocalDateTime localDateTime, String today) {
-        List<ClassesAux> aux = new ArrayList<>();
-
-        for (int i = 0; i < userClass.size(); i++) {
-            ClassesAux classesAux = new ClassesAux();
-
-            if (userClass.get(i).getDayFirstClass().toUpperCase().equals(dayOfTheWeek(today))) {
-                classesAux.setDay(today);
-                classesAux.setDiscipline(userClass.get(i).getDiscipline());
-                classesAux.setClassHour(userClass.get(i).getHourFirstClass());
-
-                aux.add(classesAux);
-            }
-            if (userClass.get(i).getDaySecondClass().toUpperCase().equals(dayOfTheWeek(today))) {
-                classesAux.setDay(today);
-                classesAux.setDiscipline(userClass.get(i).getDiscipline());
-                classesAux.setClassHour(userClass.get(i).getHourSecondClass());
-
-                aux.add(classesAux);
-            }
-        }
-        ClassesAux actualClass = actualClass(aux, localDateTime);
-
-        return closerClassHour(actualClass, localDateTime);
-    }
-
-    public static ClassesAux actualClass(List<ClassesAux> classesAuxes, LocalDateTime localDateTime) {
-        ClassesAux objetoMaisProximo = null;
+    public static Classes actualClass(List<Classes> classesAuxes, LocalDateTime localDateTime) {
+        Classes objetoMaisProximo = null;
         Duration menorDiferenca = Duration.ofDays(1);
 
-        for (ClassesAux objeto : classesAuxes) {
-            String[] horarios = objeto.getClassHour().split("-");
+        for (Classes objeto : classesAuxes) {
+            String[] horarios = objeto.getSchedule().split("-");
 
             LocalTime inicioAula = LocalTime.parse(horarios[0]);
             LocalTime fimAula = LocalTime.parse(horarios[1]);
@@ -122,9 +102,8 @@ public class PointRegistryService {
         return objetoMaisProximo;
     }
 
-    public static ActivityType closerClassHour(ClassesAux classesAuxes, LocalDateTime localDateTime) {
-        String[] schedule = classesAuxes.getClassHour().split("-");
-        int entradaSaida;
+    public ActivityType activityType(Classes classes, LocalDateTime localDateTime, Long userId) {
+        String[] schedule = classes.getSchedule().split("-");
 
         LocalTime begin = LocalTime.parse(schedule[0]);
         LocalTime end = LocalTime.parse(schedule[1]);
@@ -132,19 +111,27 @@ public class PointRegistryService {
         long diferencaBegin = ChronoUnit.MINUTES.between(begin, localDateTime);
         long diferencaEnd = ChronoUnit.MINUTES.between(end, localDateTime);
 
-        if (diferencaBegin < diferencaEnd) {
-            entradaSaida = 0;
-        } else {
-            entradaSaida = 1;
+        if (diferencaEnd >= 1) {
+            List<PointRegistry> pointRegistries = pointRegistryRepository.findByUserId(userId);
+
+            PointRegistry lastPointRegistry = pointRegistries.get(pointRegistries.size() - 1);
+
+            if (lastPointRegistry.getActivity().equals(classes.getDiscipline()) && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)) {
+                return ActivityType.SAIDA;
+            }
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não foi possivel registrar a saida, entrada não foi registrada!");
         }
 
-        if (entradaSaida == 0) {
-            if(diferencaBegin > 15) {
-                return ActivityType.ATRASO;
-            }
-            return ActivityType.ENTRADA;
+        if (diferencaBegin > 15) {
+            return ActivityType.ATRASO;
         }
-        return ActivityType.SAIDA;
+
+        if (diferencaBegin < -15) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O resgitro do ponto pode ser realizado somente dentro de 15 minutos antes do início da aula!");
+        }
+
+        return ActivityType.ENTRADA;
     }
 
     public String dayOfTheWeek(String engDayOfWeek) {
