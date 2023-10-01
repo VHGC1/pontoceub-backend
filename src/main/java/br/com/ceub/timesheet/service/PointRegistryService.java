@@ -45,13 +45,11 @@ public class PointRegistryService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não encontrado ou inexistente!"));
 
         if (!positionService.checkPosition(userRegistry.getPosition())) {
-            // Lançar uma exceção aqui caso a localização não esteja dentro dos limites aceitaveis
+            // Lançar uma exceção caso a localização não esteja dentro dos limites aceitaveis
         }
 
         PointRegistry pointRegistry = new PointRegistry();
-//        LocalDateTime now = LocalDateTime.now();
-
-        LocalDateTime now = LocalDateTime.of(2023, Month.SEPTEMBER, 4, 20, 51);
+        LocalDateTime now = LocalDateTime.now();
 
         pointRegistry.setUserId(user.getId());
         pointRegistry.setDateTimeRegistry(now);
@@ -111,16 +109,26 @@ public class PointRegistryService {
         long diferencaBegin = ChronoUnit.MINUTES.between(begin, localDateTime);
         long diferencaEnd = ChronoUnit.MINUTES.between(end, localDateTime);
 
+        List<PointRegistry> pointRegistries = pointRegistryRepository.findByUserId(userId);
+
+        PointRegistry lastPointRegistry = pointRegistries.get(pointRegistries.size() - 1);
+
         if (diferencaEnd >= 1) {
-            List<PointRegistry> pointRegistries = pointRegistryRepository.findByUserId(userId);
-
-            PointRegistry lastPointRegistry = pointRegistries.get(pointRegistries.size() - 1);
-
-            if (lastPointRegistry.getActivity().equals(classes.getDiscipline()) && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)) {
+            if (lastPointRegistry.getActivity().equals(classes.getDiscipline())
+                    && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)) {
                 return ActivityType.SAIDA;
             }
 
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não foi possivel registrar a saida, entrada não foi registrada!");
+            if (lastPointRegistry.getActivity().equals(classes.getDiscipline())
+                    && lastPointRegistry.getActivityType().equals(ActivityType.SAIDA)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saída já registrada!");
+            }
+        }
+
+        if (lastPointRegistry.getActivity().equals(classes.getDiscipline())
+                && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)
+                    || lastPointRegistry.getActivityType().equals(ActivityType.ATRASO)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entrada já registrada");
         }
 
         if (diferencaBegin > 15) {
