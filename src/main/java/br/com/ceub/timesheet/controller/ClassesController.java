@@ -3,11 +3,9 @@ package br.com.ceub.timesheet.controller;
 import br.com.ceub.timesheet.domain.dtos.ClassCreateRequest;
 import br.com.ceub.timesheet.domain.dtos.UserClassesResponse;
 import br.com.ceub.timesheet.service.UserClassesService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController

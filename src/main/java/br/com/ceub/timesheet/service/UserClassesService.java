@@ -6,7 +6,6 @@ import br.com.ceub.timesheet.domain.entities.Classes;
 import br.com.ceub.timesheet.domain.entities.User;
 import br.com.ceub.timesheet.repository.ClassesRepository;
 import br.com.ceub.timesheet.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -45,14 +44,10 @@ public class UserClassesService {
             Classes newClasses = new Classes();
 
             newClasses.setUserId(id);
-            newClasses.setCourse(classes.get(i).getCourse());
             newClasses.setDiscipline(classes.get(i).getDiscipline());
             newClasses.setCampus(classes.get(i).getCampus());
-            newClasses.setTurn(classes.get(i).getTurn());
-            newClasses.setDayFirstClass(classes.get(i).getDayFirstClass());
-            newClasses.setHourFirstClass(classes.get(i).getHourFirstClass());
-            newClasses.setDaySecondClass(classes.get(i).getDaySecondClass());
-            newClasses.setHourSecondClass(classes.get(i).getHourSecondClass());
+            newClasses.setClassDay(classes.get(i).getClassDay());
+            newClasses.setSchedule(classes.get(i).getSchedule());
 
             result.getClasses().add(newClasses);
             classesRepository.save(newClasses);
