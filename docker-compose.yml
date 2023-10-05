@@ -1,0 +1,9 @@
+version: "4.0"
+
+services:
+  aplicacao:
+    image: pontoceub-backend
+    restart: always
+    ports:
+      - "8084:8080"
+    container_name: pontoceub-backend
