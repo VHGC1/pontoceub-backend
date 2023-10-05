@@ -6,6 +6,6 @@ COPY ./ /opt/app
 RUN mvn clean install -DskipTests
 # Run spring boot in Docker
 FROM openjdk:17-oracle
-COPY --from=build /opt/app/target/*.jar app.jar
+COPY --from=build /opt/app/target/*.jar timesheet-0.0.1-SNAPSHOT.jar
 
 ENTRYPOINT ["java","-jar","-Xmx1024M","-Dserver.port=${PORT}","timesheet-0.0.1-SNAPSHOT.jar"]
