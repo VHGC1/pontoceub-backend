@@ -14,6 +14,6 @@ WORKDIR /opt/app
 # Copy the spring-boot-api-tutorial.jar from the maven stage to the /opt/app directory of the current stage.
 COPY --from=maven /usr/src/app/target/${JAR_FILE} /opt/app/
 
-ENTRYPOINT ["java","-jar","spring-boot-api-tutorial.jar"]
+ENTRYPOINT ["java","-jar","timesheet-0.0.1-SNAPSHOT.jar"]
 
 
