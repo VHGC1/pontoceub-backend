@@ -3,6 +3,7 @@ FROM maven:3.6.3 AS maven
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 
+RUN mvn clean
 RUN mvn package
 
 FROM eclipse-temurin:17-jdk-jammy
