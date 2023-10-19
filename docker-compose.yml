@@ -9,7 +9,7 @@ services:
       - "3306:3306"
     expose:
       - "3306"
-    container_name: mysql-container
+    container_name: mysql
     volumes:
       - /var/lib/mysql
   aplicacao:
