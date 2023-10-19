@@ -18,5 +18,4 @@ services:
     ports:
       - "8084:8080"
     container_name: pontoceub-backend
-  volumes:
-    my-db:
+
