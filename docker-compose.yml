@@ -1,7 +1,22 @@
 services:
+  db:
+    image: beercan1989/arm-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    container_name: mysql-container
+    volumes:
+      - my-db:/var/lib/mysql
   aplicacao:
     image: pontoceub-backend
     restart: always
     ports:
       - "8084:8080"
     container_name: pontoceub-backend
+  volumes:
+    my-db:
