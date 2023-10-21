@@ -1,6 +1,8 @@
 package br.com.ceub.timesheet.service;
 
 import br.com.ceub.timesheet.domain.dtos.ClassCreateRequest;
+import br.com.ceub.timesheet.domain.dtos.ClassesByDayResponse;
+import br.com.ceub.timesheet.domain.dtos.UserClassesByDayShort;
 import br.com.ceub.timesheet.domain.dtos.UserClassesResponse;
 import br.com.ceub.timesheet.domain.entities.Classes;
 import br.com.ceub.timesheet.domain.entities.User;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +27,7 @@ public class UserClassesService {
         this.classesRepository = classesRepository;
     }
 
-    public UserClassesResponse userClasses(Long id) {
+    public UserClassesResponse getUserClasses(Long id) {
         User result = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não encontrado ou inexistente!"));
 
         UserClassesResponse user = new UserClassesResponse();
@@ -35,6 +38,33 @@ public class UserClassesService {
         user.setClasses(result.getClasses());
 
         return user;
+    }
+
+    public ClassesByDayResponse getClassesByDay(Long id, String day) {
+        User result = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não encontrado ou inexistente!"));
+
+        List<Classes> classes = result.getClasses();
+
+        ClassesByDayResponse classesByDayResponse = new ClassesByDayResponse();
+        classesByDayResponse.setDay(day);
+
+        List<UserClassesByDayShort> userClassesByDayShortList = new ArrayList<>();
+
+        for(int i = 0; i < classes.size(); i++) {
+            if(classes.get(i).getClassDay().equalsIgnoreCase(day)) {
+                UserClassesByDayShort userClassesByDayShort = new UserClassesByDayShort();
+
+                userClassesByDayShort.setDiscipline(classes.get(i).getDiscipline());
+                userClassesByDayShort.setCampus(classes.get(i).getCampus());
+                userClassesByDayShort.setSchedule(classes.get(i).getSchedule());
+
+                userClassesByDayShortList.add(userClassesByDayShort);
+            }
+        }
+
+        classesByDayResponse.setClasses(userClassesByDayShortList);
+
+        return classesByDayResponse;
     }
 
     public UserClassesResponse createUserClasses(Long id, List<ClassCreateRequest> classes) {
