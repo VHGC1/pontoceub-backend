@@ -25,7 +25,6 @@ public class ClassesController {
         return ResponseEntity.ok(userClassesService.createUserClasses(id, classes));
     }
 
-    //return list
     @GetMapping("/{id}")
     public ResponseEntity<List<ClassesByDayResponse>> getUserClasses(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userClassesService.getUserClasses(id));

@@ -37,7 +37,7 @@ public class JwtHelper {
     }
 
     public AuthenticatedUserDetails validateAndGetUser(String jwtToken) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJwt(jwtToken).getBody();
+        Claims claims = Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(jwtToken).getBody();
         return new AuthenticatedUserDetails(
                 Long.valueOf(claims.getSubject()),
                 claims.get("name", String.class),
