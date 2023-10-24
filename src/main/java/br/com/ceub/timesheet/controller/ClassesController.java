@@ -20,18 +20,14 @@ public class ClassesController {
         this.userClassesService = userClassesService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserClassesResponse> getUserClasses(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(userClassesService.getUserClasses(id));
-    }
-
     @PostMapping("/{id}")
     public ResponseEntity<UserClassesResponse> createUserClasses(@PathVariable("id") Long id, @RequestBody List<ClassCreateRequest> classes) {
         return ResponseEntity.ok(userClassesService.createUserClasses(id, classes));
     }
 
-    @GetMapping("/{id}/{day}")
-    public ResponseEntity<ClassesByDayResponse> getClassesByDay(@PathVariable("id") Long id, @PathVariable("day") String day) {
-        return ResponseEntity.ok(userClassesService.getClassesByDay(id, day));
+    //return list
+    @GetMapping("/{id}")
+    public ResponseEntity<List<ClassesByDayResponse>> getUserClasses(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(userClassesService.getUserClasses(id));
     }
 }

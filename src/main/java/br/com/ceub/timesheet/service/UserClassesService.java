@@ -1,5 +1,6 @@
 package br.com.ceub.timesheet.service;
 
+import br.com.ceub.timesheet.Utils.WeekDay;
 import br.com.ceub.timesheet.domain.dtos.ClassCreateRequest;
 import br.com.ceub.timesheet.domain.dtos.ClassesByDayResponse;
 import br.com.ceub.timesheet.domain.dtos.UserClassesByDayShort;
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserClassesService {
@@ -27,42 +31,44 @@ public class UserClassesService {
         this.classesRepository = classesRepository;
     }
 
-    public UserClassesResponse getUserClasses(Long id) {
-        User result = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não encontrado ou inexistente!"));
-
-        UserClassesResponse user = new UserClassesResponse();
-
-        user.setId(result.getId());
-        user.setName(result.getName());
-        user.setEmail(result.getEmail());
-        user.setClasses(result.getClasses());
-
-        return user;
-    }
-
-    public ClassesByDayResponse getClassesByDay(Long id, String day) {
+    public List<ClassesByDayResponse> getUserClasses(Long id) {
         User result = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não encontrado ou inexistente!"));
 
         List<Classes> classes = result.getClasses();
 
-        ClassesByDayResponse classesByDayResponse = new ClassesByDayResponse();
-        classesByDayResponse.setDay(day);
+        List<ClassesByDayResponse> classesByDayResponse = new ArrayList<>();
 
-        List<UserClassesByDayShort> userClassesByDayShortList = new ArrayList<>();
+        List<String> uniqueClassDays = classes.stream()
+                .map(Classes::getClassDay)
+                .distinct()
+                .map(WeekDay::fromValue)
+                .sorted()
+                .map(WeekDay::toString)
+                .map(i -> i.toLowerCase() + "-feira").toList();
+        ;
 
-        for(int i = 0; i < classes.size(); i++) {
-            if(classes.get(i).getClassDay().equalsIgnoreCase(day)) {
-                UserClassesByDayShort userClassesByDayShort = new UserClassesByDayShort();
+        for (int i = 0; i < uniqueClassDays.size(); i++) {
+            ClassesByDayResponse classesByDay = new ClassesByDayResponse();
+            classesByDay.setDay(uniqueClassDays.get(i));
 
-                userClassesByDayShort.setDiscipline(classes.get(i).getDiscipline());
-                userClassesByDayShort.setCampus(classes.get(i).getCampus());
-                userClassesByDayShort.setSchedule(classes.get(i).getSchedule());
+            List<UserClassesByDayShort> userClassesByDayShort = new ArrayList<>();
 
-                userClassesByDayShortList.add(userClassesByDayShort);
+            for (int j = 0; j < classes.size(); j++) {
+                if (classes.get(j).getClassDay().equalsIgnoreCase(uniqueClassDays.get(i))) {
+                    UserClassesByDayShort userClassesByDayShort1 = new UserClassesByDayShort();
+
+                    userClassesByDayShort1.setDiscipline(classes.get(j).getDiscipline());
+                    userClassesByDayShort1.setCampus(classes.get(j).getCampus());
+                    userClassesByDayShort1.setSchedule(classes.get(j).getSchedule());
+
+                    userClassesByDayShort.add(userClassesByDayShort1);
+                }
             }
+            classesByDay.setClasses(userClassesByDayShort);
+            classesByDayResponse.add(classesByDay);
         }
 
-        classesByDayResponse.setClasses(userClassesByDayShortList);
+        ClassesByDayResponse.sortClassesBySchedule(classesByDayResponse);
 
         return classesByDayResponse;
     }
