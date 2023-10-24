@@ -51,20 +51,20 @@ public class UserClassesService {
             ClassesByDayResponse classesByDay = new ClassesByDayResponse();
             classesByDay.setDay(uniqueClassDays.get(i));
 
-            List<UserClassesByDayShort> userClassesByDayShort = new ArrayList<>();
+            List<UserClassesByDayShort> userClassesByDayShortList = new ArrayList<>();
 
             for (int j = 0; j < classes.size(); j++) {
                 if (classes.get(j).getClassDay().equalsIgnoreCase(uniqueClassDays.get(i))) {
-                    UserClassesByDayShort userClassesByDayShort1 = new UserClassesByDayShort();
+                    UserClassesByDayShort userClassesByDayShort = new UserClassesByDayShort();
 
-                    userClassesByDayShort1.setDiscipline(classes.get(j).getDiscipline());
-                    userClassesByDayShort1.setCampus(classes.get(j).getCampus());
-                    userClassesByDayShort1.setSchedule(classes.get(j).getSchedule());
+                    userClassesByDayShort.setDiscipline(classes.get(j).getDiscipline());
+                    userClassesByDayShort.setCampus(classes.get(j).getCampus());
+                    userClassesByDayShort.setSchedule(classes.get(j).getSchedule());
 
-                    userClassesByDayShort.add(userClassesByDayShort1);
+                    userClassesByDayShortList.add(userClassesByDayShort);
                 }
             }
-            classesByDay.setClasses(userClassesByDayShort);
+            classesByDay.setClasses(userClassesByDayShortList);
             classesByDayResponse.add(classesByDay);
         }
 
