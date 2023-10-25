@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/classes")
-@RolesAllowed({"ROLE_BACKOFFICE_USER", "ROLE_ADMIN_USER"})
+@RolesAllowed({"ROLE_NORMAL_USER", "ROLE_ADMIN_USER"})
 public class ClassesController {
 
     private final UserClassesService userClassesService;

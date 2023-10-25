@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/registries")
-@RolesAllowed({"ROLE_BACKOFFICE_USER", "ROLE_ADMIN_USER"})
+@RolesAllowed({"ROLE_NORMAL_USER", "ROLE_ADMIN_USER"})
 public class PointRegistryController {
     private final PointRegistryService pointRegistryService;
 
