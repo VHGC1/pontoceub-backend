@@ -6,11 +6,12 @@ import br.com.ceub.timesheet.service.PointRegistryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
 @RequestMapping("/registries")
-//@RolesAllowed({"ROLE_BACKOFFICE_USER", "ROLE_ADMIN_USER"})
+@RolesAllowed({"ROLE_BACKOFFICE_USER", "ROLE_ADMIN_USER"})
 public class PointRegistryController {
     private final PointRegistryService pointRegistryService;
 

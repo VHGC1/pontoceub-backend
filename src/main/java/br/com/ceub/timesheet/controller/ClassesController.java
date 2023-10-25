@@ -7,11 +7,12 @@ import br.com.ceub.timesheet.service.UserClassesService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
 @RequestMapping("/classes")
-//@RolesAllowed({"ROLE_BACKOFFICE_USER", "ROLE_ADMIN_USER"})
+@RolesAllowed({"ROLE_BACKOFFICE_USER", "ROLE_ADMIN_USER"})
 public class ClassesController {
 
     private final UserClassesService userClassesService;
