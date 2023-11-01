@@ -44,9 +44,9 @@ public class PointRegistryService {
         User user = userRepository.findById(userRegistry.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não encontrado ou inexistente!"));
 
-        if (!positionService.checkPosition(userRegistry.getPosition())) {
-            // Lançar uma exceção caso a localização não esteja dentro dos limites aceitaveis
-        }
+//        if (!positionService.checkPosition(userRegistry.getPosition())) {
+//            // Lançar uma exceção caso a localização não esteja dentro dos limites aceitaveis
+//        }
 
         if (!(user.getClasses().size() > 0)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario não tem aulas registradas!");

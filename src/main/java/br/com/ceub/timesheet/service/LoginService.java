@@ -3,11 +3,8 @@ package br.com.ceub.timesheet.service;
 import br.com.ceub.timesheet.domain.dtos.LoginRequest;
 import br.com.ceub.timesheet.domain.dtos.LoginResponse;
 import br.com.ceub.timesheet.domain.entities.User;
-import br.com.ceub.timesheet.exception.AppError;
-import br.com.ceub.timesheet.exception.AppException;
 import br.com.ceub.timesheet.repository.UserRepository;
 import br.com.ceub.timesheet.security.JwtHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,11 +35,11 @@ public class LoginService {
         Optional<User> user = userService.findByEmail(loginRequest.email());
 
         if (user.isEmpty()) {
-            throw AppException.of(AppError.INVALID_CREDENTIALS);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email e/ou senha invalidos");
         }
 
         boolean passwordIsValid = passwordEncoder.matches(loginRequest.password(), user.get().getPassword());
-        if (!passwordIsValid) throw AppException.of(AppError.INVALID_CREDENTIALS);
+        if (!passwordIsValid) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email e/ou senha invalidos");
 
         return jwtHelper.createJwt(user.get());
     }
@@ -51,7 +48,7 @@ public class LoginService {
         Optional<User> user = userRepository.findByEmail(loginRequest.email());
 
         if (user.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Senha incorreta ou email inexistente");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email e/ou senha invalidos");
         }
 
         return new LoginResponse(tokenReturn(loginRequest), user.get());
