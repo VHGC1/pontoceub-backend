@@ -1,4 +1,4 @@
-FROM arm32v7/eclipse-temurin:17
+FROM arm32v7/eclipse-temurin
 VOLUME /tmp
 ARG JAR_FILE timesheet-0.0.1-SNAPSHOT
 COPY target/*.jar app.jar
