@@ -48,6 +48,10 @@ public class PointRegistryService {
             // Lançar uma exceção caso a localização não esteja dentro dos limites aceitaveis
         }
 
+        if (!(user.getClasses().size() > 0)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario não tem aulas registradas!");
+        }
+
         PointRegistry pointRegistry = new PointRegistry();
         LocalDateTime now = LocalDateTime.now();
 
@@ -111,6 +115,10 @@ public class PointRegistryService {
 
         List<PointRegistry> pointRegistries = pointRegistryRepository.findByUserId(userId);
 
+        if (pointRegistries.size() == 0) {
+            return ActivityType.ENTRADA;
+        }
+
         PointRegistry lastPointRegistry = pointRegistries.get(pointRegistries.size() - 1);
 
         if (diferencaEnd >= 1) {
@@ -127,9 +135,10 @@ public class PointRegistryService {
 
         if (lastPointRegistry.getActivity().equals(classes.getDiscipline())
                 && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)
-                    || lastPointRegistry.getActivityType().equals(ActivityType.ATRASO)) {
+                || lastPointRegistry.getActivityType().equals(ActivityType.ATRASO)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entrada já registrada");
         }
+
 
         if (diferencaBegin > 15) {
             return ActivityType.ATRASO;
