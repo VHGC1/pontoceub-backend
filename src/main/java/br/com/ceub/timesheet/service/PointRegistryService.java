@@ -116,6 +116,9 @@ public class PointRegistryService {
         List<PointRegistry> pointRegistries = pointRegistryRepository.findByUserId(userId);
 
         if (pointRegistries.size() == 0) {
+            if (diferencaBegin > 15) {
+                return ActivityType.ATRASO;
+            }
             return ActivityType.ENTRADA;
         }
 
