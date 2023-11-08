@@ -115,10 +115,15 @@ public class PointRegistryService {
 
         List<PointRegistry> pointRegistries = pointRegistryRepository.findByUserId(userId);
 
+        if (diferencaBegin > 15) {
+            return ActivityType.ATRASO;
+        }
+
+        if (diferencaBegin < -15) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O registro do ponto pode ser realizado somente dentro de 15 minutos antes do início da aula!");
+        }
+
         if (pointRegistries.size() == 0) {
-            if (diferencaBegin > 15) {
-                return ActivityType.ATRASO;
-            }
             return ActivityType.ENTRADA;
         }
 
@@ -140,15 +145,6 @@ public class PointRegistryService {
                 && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)
                 || lastPointRegistry.getActivityType().equals(ActivityType.ATRASO)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entrada já registrada");
-        }
-
-
-        if (diferencaBegin > 15) {
-            return ActivityType.ATRASO;
-        }
-
-        if (diferencaBegin < -15) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O resgitro do ponto pode ser realizado somente dentro de 15 minutos antes do início da aula!");
         }
 
         return ActivityType.ENTRADA;
