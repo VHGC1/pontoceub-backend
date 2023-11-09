@@ -81,6 +81,7 @@ public class PointRegistryService {
 
         pointRegistry.setActivity(classes.getDiscipline());
         pointRegistry.setActivityType(activityType(classes, localDateTime, pointRegistry.getUserId()));
+        pointRegistry.setActivityId(classes.getId());
     }
 
     public static Classes actualClass(List<Classes> classesAuxes, LocalDateTime localDateTime) {
@@ -115,8 +116,6 @@ public class PointRegistryService {
 
         List<PointRegistry> pointRegistries = pointRegistryRepository.findByUserId(userId);
 
-
-
         if (pointRegistries.size() == 0) {
             if (diferencaBegin > 15) {
                 return ActivityType.ATRASO;
@@ -132,18 +131,17 @@ public class PointRegistryService {
         PointRegistry lastPointRegistry = pointRegistries.get(pointRegistries.size() - 1);
 
         if (diferencaEnd >= 1) {
-            if (lastPointRegistry.getActivity().equals(classes.getDiscipline())
-                    && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)) {
+            if (lastPointRegistry.getActivityId().equals(classes.getId()) && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)) {
                 return ActivityType.SAIDA;
             }
 
-            if (lastPointRegistry.getActivity().equals(classes.getDiscipline())
+            if (lastPointRegistry.getActivityId().equals(classes.getId())
                     && lastPointRegistry.getActivityType().equals(ActivityType.SAIDA)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saída já registrada!");
             }
         }
 
-        if (lastPointRegistry.getActivity().equals(classes.getDiscipline())
+        if (lastPointRegistry.getActivityId().equals(classes.getId())
                 && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)
                 || lastPointRegistry.getActivityType().equals(ActivityType.ATRASO)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entrada já registrada");

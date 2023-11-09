@@ -18,4 +18,5 @@ public class PointRegistry {
     private ActivityType activityType;
     private LocalDateTime dateTimeRegistry;
     private String activity;
+    private Integer activityId;
 }
