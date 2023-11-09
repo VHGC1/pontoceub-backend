@@ -79,9 +79,13 @@ public class PointRegistryService {
 
         Classes classes = actualClass(todayClasses, localDateTime);
 
+        if (classes == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existem aulas cadastradas para o horario atual!");
+        }
+
         pointRegistry.setActivity(classes.getDiscipline());
-        pointRegistry.setActivityType(activityType(classes, localDateTime, pointRegistry.getUserId()));
         pointRegistry.setActivityId(classes.getId());
+        pointRegistry.setActivityType(activityType(classes, localDateTime, pointRegistry.getUserId()));
     }
 
     public static Classes actualClass(List<Classes> classesAuxes, LocalDateTime localDateTime) {
@@ -102,7 +106,27 @@ public class PointRegistryService {
                 objetoMaisProximo = objeto;
             }
         }
-        return objetoMaisProximo;
+
+        if (objetoMaisProximo != null) {
+            String[] horarios = objetoMaisProximo.getSchedule().split("-");
+
+            LocalTime inicioAula = LocalTime.parse(horarios[0]);
+            LocalTime fimAula = LocalTime.parse(horarios[1]);
+
+            long diferencaBegin = ChronoUnit.MINUTES.between(inicioAula, localDateTime);
+            long diferencaEnd = ChronoUnit.MINUTES.between(fimAula, localDateTime);
+
+            System.out.println(diferencaBegin);
+            System.out.println(diferencaEnd);
+
+            System.out.println(objetoMaisProximo);
+
+            if (diferencaBegin >= -15) {
+                return objetoMaisProximo;
+            }
+        }
+
+        return null;
     }
 
     public ActivityType activityType(Classes classes, LocalDateTime localDateTime, Long userId) {
@@ -119,10 +143,6 @@ public class PointRegistryService {
         if (pointRegistries.size() == 0) {
             if (diferencaBegin > 15) {
                 return ActivityType.ATRASO;
-            }
-
-            if (diferencaBegin < -15) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O registro do ponto pode ser realizado somente dentro de 15 minutos antes do início da aula!");
             }
 
             return ActivityType.ENTRADA;
@@ -142,17 +162,12 @@ public class PointRegistryService {
         }
 
         if (lastPointRegistry.getActivityId().equals(classes.getId())
-                && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)
-                || lastPointRegistry.getActivityType().equals(ActivityType.ATRASO)) {
+                && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entrada já registrada");
         }
 
         if (diferencaBegin > 15) {
             return ActivityType.ATRASO;
-        }
-
-        if (diferencaBegin < -15) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O registro do ponto pode ser realizado somente dentro de 15 minutos antes do início da aula!");
         }
 
         return ActivityType.ENTRADA;
