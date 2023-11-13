@@ -35,7 +35,7 @@ public class SwaggerConfig {
                 "Ceub - Timesheet",
                 "1.0.0",
                 "",
-                new Contact("Universidade Iteris", "", ""),
+                new Contact("", "", ""),
                 "", "", Collections.emptyList());
     }
 
