@@ -5,9 +5,7 @@ import br.com.ceub.timesheet.domain.entities.PointRegistry;
 import br.com.ceub.timesheet.service.PointRegistryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.security.RolesAllowed;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,10 +26,5 @@ public class PointRegistryController {
     @GetMapping("/{id}")
     public ResponseEntity<List<PointRegistry>> getAllUserPointRegistries(@PathVariable("id") Long id) {
         return pointRegistryService.userPointRegistries(id);
-    }
-
-    @GetMapping("/time")
-    public LocalDateTime getTime() {
-        return LocalDateTime.now();
     }
 }
