@@ -6,11 +6,15 @@ import br.com.ceub.timesheet.domain.entities.Classes;
 import br.com.ceub.timesheet.domain.entities.PointRegistry;
 import br.com.ceub.timesheet.domain.entities.User;
 import br.com.ceub.timesheet.repository.PointRegistryRepository;
+import br.com.ceub.timesheet.repository.PointRegistryRepositoryPaginated;
 import br.com.ceub.timesheet.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,17 +27,33 @@ import java.util.Map;
 @Service
 public class PointRegistryService {
     private final PointRegistryRepository pointRegistryRepository;
+
+    private final PointRegistryRepositoryPaginated pointRegistryRepositoryPaginated;
     private final UserRepository userRepository;
     private final PositionService positionService;
 
-    public PointRegistryService(PointRegistryRepository pointRegistryRepository, UserRepository userRepository, PositionService positionService) {
+    public PointRegistryService(
+            PointRegistryRepository pointRegistryRepository,
+            PointRegistryRepositoryPaginated pointRegistryRepositoryPaginated,
+            UserRepository userRepository,
+            PositionService positionService
+    ) {
         this.pointRegistryRepository = pointRegistryRepository;
+        this.pointRegistryRepositoryPaginated = pointRegistryRepositoryPaginated;
         this.userRepository = userRepository;
         this.positionService = positionService;
     }
 
     public ResponseEntity<List<PointRegistry>> userPointRegistries(Long id) {
         List<PointRegistry> pointRegistry = pointRegistryRepository.findByUserId(id);
+
+        return ResponseEntity.ok(pointRegistry);
+    }
+
+    public ResponseEntity<List<PointRegistry>> userPointRegistriesPaginated(Long id, int pageSize, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        List<PointRegistry> pointRegistry = pointRegistryRepositoryPaginated.findByUserId(id, pageable);
 
         return ResponseEntity.ok(pointRegistry);
     }
