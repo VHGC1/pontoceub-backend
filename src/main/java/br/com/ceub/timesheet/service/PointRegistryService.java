@@ -8,8 +8,10 @@ import br.com.ceub.timesheet.domain.entities.User;
 import br.com.ceub.timesheet.repository.PointRegistryRepository;
 import br.com.ceub.timesheet.repository.PointRegistryRepositoryPaginated;
 import br.com.ceub.timesheet.repository.UserRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -50,10 +52,11 @@ public class PointRegistryService {
         return ResponseEntity.ok(pointRegistry);
     }
 
-    public ResponseEntity<List<PointRegistry>> userPointRegistriesPaginated(Long id, int pageSize, int pageNo) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+    public ResponseEntity<Page<PointRegistry>> userPointRegistriesPaginated(Long id, int pageSize, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(
+                Sort.Order.desc("id")));
 
-        List<PointRegistry> pointRegistry = pointRegistryRepositoryPaginated.findByUserId(id, pageable);
+        Page<PointRegistry> pointRegistry = pointRegistryRepositoryPaginated.findByUserId(id, pageable);
 
         return ResponseEntity.ok(pointRegistry);
     }
@@ -87,7 +90,6 @@ public class PointRegistryService {
         String today = String.valueOf(localDateTime.getDayOfWeek());
 
         List<Classes> todayClasses = new ArrayList<>();
-
 
         for (Classes userClass : userClasses) {
             if (userClass.getClassDay().toUpperCase().equals(dayOfTheWeek(today))) {

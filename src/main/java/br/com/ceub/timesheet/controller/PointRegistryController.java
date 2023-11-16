@@ -25,7 +25,7 @@ public class PointRegistryController {
     }
 
     @GetMapping("/{id}/{pageSize}/{pageNo}")
-    public ResponseEntity<List<PointRegistry>> getAllUserPointRegistries(@PathVariable("id") Long id, @PathVariable("pageSize") int pageSize, @PathVariable("pageNo") int pageNo) {
+    public ResponseEntity<Page<PointRegistry>> getAllUserPointRegistries(@PathVariable("id") Long id, @PathVariable("pageSize") int pageSize, @PathVariable("pageNo") int pageNo) {
         return pointRegistryService.userPointRegistriesPaginated(id, pageSize, pageNo);
     }
 }
