@@ -105,7 +105,7 @@ public class PointRegistryService {
 
         pointRegistry.setActivity(classes.getDiscipline());
         pointRegistry.setActivityId(classes.getId());
-        pointRegistry.setActivityType(activityType(classes, localDateTime, pointRegistry.getUserId()));
+        pointRegistry.setActivityType(activityType(classes, localDateTime));
     }
 
     public static Classes actualClass(List<Classes> classesAuxes, LocalDateTime localDateTime) {
@@ -136,12 +136,7 @@ public class PointRegistryService {
             long diferencaBegin = ChronoUnit.MINUTES.between(inicioAula, localDateTime);
             long diferencaEnd = ChronoUnit.MINUTES.between(fimAula, localDateTime);
 
-            System.out.println(diferencaBegin);
-            System.out.println(diferencaEnd);
-
-            System.out.println(objetoMaisProximo);
-
-            if (diferencaBegin >= -15) {
+            if (diferencaBegin >= -15 && diferencaEnd < 0) {
                 return objetoMaisProximo;
             }
         }
@@ -149,16 +144,14 @@ public class PointRegistryService {
         return null;
     }
 
-    public ActivityType activityType(Classes classes, LocalDateTime localDateTime, Long userId) {
+    public ActivityType activityType(Classes classes, LocalDateTime localDateTime) {
         String[] schedule = classes.getSchedule().split("-");
 
         LocalTime begin = LocalTime.parse(schedule[0]);
-        LocalTime end = LocalTime.parse(schedule[1]);
 
         long diferencaBegin = ChronoUnit.MINUTES.between(begin, localDateTime);
-        long diferencaEnd = ChronoUnit.MINUTES.between(end, localDateTime);
 
-        List<PointRegistry> pointRegistries = pointRegistryRepository.findByUserId(userId);
+        List<PointRegistry> pointRegistries = pointRegistryRepository.findByUserId(classes.getUserId());
 
         if (pointRegistries.size() == 0) {
             if (diferencaBegin > 15) {
@@ -170,24 +163,26 @@ public class PointRegistryService {
 
         PointRegistry lastPointRegistry = pointRegistries.get(pointRegistries.size() - 1);
 
-        if (diferencaEnd >= 1) {
-            if (lastPointRegistry.getActivityId().equals(classes.getId()) && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)) {
+        LocalDateTime lastRegistryTime = lastPointRegistry.getDateTimeRegistry();
+
+        long diferencaLastRegistry = ChronoUnit.MINUTES.between(lastRegistryTime, localDateTime);
+
+        if (diferencaLastRegistry >= 15) {
+            if (lastPointRegistry.getActivityId().equals(classes.getId()) &&
+                    lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA) ||
+                    lastPointRegistry.getActivityType().equals(ActivityType.ATRASO)) {
                 return ActivityType.SAIDA;
             }
-
-            if (lastPointRegistry.getActivityId().equals(classes.getId())
-                    && lastPointRegistry.getActivityType().equals(ActivityType.SAIDA)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saída já registrada!");
-            }
-        }
-
-        if (lastPointRegistry.getActivityId().equals(classes.getId())
-                && lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entrada já registrada");
         }
 
         if (diferencaBegin > 15) {
             return ActivityType.ATRASO;
+        }
+
+        if (lastPointRegistry.getActivityId().equals(classes.getId()) &&
+                lastPointRegistry.getActivityType().equals(ActivityType.ENTRADA) ||
+                lastPointRegistry.getActivityType().equals(ActivityType.ATRASO)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Entrada ou Atraso já registrado!");
         }
 
         return ActivityType.ENTRADA;

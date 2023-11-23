@@ -1,5 +1,6 @@
 package br.com.ceub.timesheet.domain.entities;
 
+import lombok.Builder;
 import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
