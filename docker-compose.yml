@@ -21,7 +21,7 @@ services:
   postgres:
     image: postgres:latest
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - /var/lib/postgresql
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
