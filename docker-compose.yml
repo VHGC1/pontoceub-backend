@@ -12,20 +12,14 @@ services:
     container_name: mysql
     volumes:
       - /var/lib/mysql
-  aplicacao:
-    image: pontoceub-backend
-    restart: always
-    ports:
-      - "8084:8080"
-    container_name: pontoceub-backend
   postgres:
-    image: postgres:latest
+    image: arm32v5/postgres
     volumes:
       - /var/lib/postgresql
     environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: timesheet
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: v7i8t1o2r9
     ports:
       - 5432:5432
   keycloak:
@@ -34,13 +28,18 @@ services:
     environment:
       KC_DB: postgres
       KC_DB_URL_HOST: postgres
-      KC_DB_URL_DATABASE: keycloak
-      KC_DB_PASSWORD: 123456
-      KC_DB_USERNAME: keycloak
+      KC_DB_URL_DATABASE: timesheet
+      KC_DB_PASSWORD: v7i8t1o2r9
+      KC_DB_USERNAME: postgres
       KC_DB_SCHEMA: public
       KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: password
+      KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - 8081:8080
-
+  aplicacao:
+    image: pontoceub-backend
+    restart: always
+    ports:
+      - "8084:8080"
+    container_name: pontoceub-backend
 
