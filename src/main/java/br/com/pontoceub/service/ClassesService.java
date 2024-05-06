@@ -2,6 +2,7 @@ package br.com.pontoceub.service;
 
 import br.com.pontoceub.domain.dto.ClassesByDayDTO;
 import br.com.pontoceub.domain.dto.ClassesDTO;
+import br.com.pontoceub.domain.dto.UserDTO;
 import br.com.pontoceub.domain.entities.Classes;
 import br.com.pontoceub.repository.ClassesRepository;
 import br.com.pontoceub.utils.WeekDayEnum;
@@ -21,10 +22,8 @@ public class ClassesService extends AbstractDTOService<ClassesDTO, Classes, Long
         this.userService = userService;
     }
 
-    public List<ClassesByDayDTO> getUserClassesByDay(Long id) {
-//        UserDTO result = userService.findById(userService.getUserIdFromRequest());
-        List<Classes> classes = repo.findByUserId(id);
-
+    public List<ClassesByDayDTO> getUserClassesByDay() {
+        List<Classes> classes = repo.findByUserId(userService.getUserIdFromRequest());
 
         List<ClassesByDayDTO> classesByDay = new ArrayList<>();
 

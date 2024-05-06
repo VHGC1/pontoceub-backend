@@ -20,9 +20,8 @@ public class ClassesController extends AbstractController<ClassesDTO, Long, Clas
         return service.createUserClasses(id, classes);
     }
 
-    @GetMapping("/user/{id}")
-    public List<ClassesByDayDTO> getUserClasses(@PathVariable("id") Long id) {
-
-        return service.getUserClassesByDay(id);
+    @GetMapping("/user")
+    public List<ClassesByDayDTO> getUserClasses() {
+        return service.getUserClassesByDay();
     }
 }
