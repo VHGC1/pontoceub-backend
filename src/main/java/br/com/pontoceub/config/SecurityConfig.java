@@ -28,18 +28,17 @@ import java.security.interfaces.RSAPublicKey;
 @EnableWebSecurity
 public class SecurityConfig {
     @Value("${jwt.public.key}")
-    private RSAPublicKey publicKey;
+    private RSAPublicKey key;
     @Value("${jwt.private.key}")
-    private RSAPrivateKey rsaPrivateKey;
+    private RSAPrivateKey priv;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/swagger-ui/**").permitAll()
-                                .requestMatchers("/login").permitAll()
-                                .requestMatchers("/users").permitAll()
+                                .requestMatchers("/login", "/users", "/swagger-ui/**", "/swagger-ui/index.html#/")
+                                .permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .oauth2ResourceServer(
@@ -55,12 +54,12 @@ public class SecurityConfig {
 
     @Bean
     JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(this.publicKey).build();
+        return NimbusJwtDecoder.withPublicKey(this.key).build();
     }
 
     @Bean
     JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(this.rsaPrivateKey).build();
+        JWK jwk = new RSAKey.Builder(this.key).privateKey(this.priv).build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
     }

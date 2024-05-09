@@ -4,7 +4,7 @@ import br.com.pontoceub.domain.entities.Position;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-public class PotisionValidator {
+public class PositionValidator {
     private double lat1 = -15.764587;
     private double long1 = -47.895148;
 
