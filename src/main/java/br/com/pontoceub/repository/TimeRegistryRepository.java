@@ -11,5 +11,5 @@ import java.util.List;
 public interface TimeRegistryRepository extends JpaRepository<TimeRegistry, Long> {
     List<TimeRegistry> findByUserId(Long id);
 
-    Page<TimeRegistry> getTimeRegistriesByUserId(Pageable pageable, long id);
+    Page<TimeRegistry> findByUserId(Pageable pageable,Long id);
 }

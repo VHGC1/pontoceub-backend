@@ -172,7 +172,7 @@ public class TimeRegistryService extends AbstractDTOService<TimeRegistryDTO, Tim
         return day.get(engDayOfWeek);
     }
 
-    public Page<TimeRegistryDTO> getRegistries(Pageable pageable) {
-        return repo.getTimeRegistriesByUserId(pageable, userService.getUserIdFromRequest()).map(this::entityToDTO);
+    public Page<TimeRegistryDTO> getRegistries(Pageable page) {
+        return repo.findByUserId(page, userService.getUserIdFromRequest()).map(this::entityToDTO);
     }
 }
