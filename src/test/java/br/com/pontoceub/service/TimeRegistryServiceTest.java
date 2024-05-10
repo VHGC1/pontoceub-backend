@@ -52,7 +52,7 @@ public class TimeRegistryServiceTest {
 
         classes.setId(51L);
         classes.setUser(user);
-        classes.setDiscipline("Sistemas de Comunicação");
+        classes.setName("Sistemas de Comunicação");
         classes.setClassDay("Segunda-feira");
         classes.setSchedule("19:10-20:50");
 
@@ -90,7 +90,7 @@ public class TimeRegistryServiceTest {
 
         classes.setId(51L);
         classes.setUser(user);
-        classes.setDiscipline("Sistemas de Comunicação");
+        classes.setName("Sistemas de Comunicação");
         classes.setClassDay("Segunda-feira");
         classes.setSchedule("19:10-20:50");
 
@@ -114,7 +114,7 @@ public class TimeRegistryServiceTest {
 
         classes.setId(51L);
         classes.setUser(user);
-        classes.setDiscipline("Sistemas de Comunicação");
+        classes.setName("Sistemas de Comunicação");
         classes.setClassDay("Segunda-feira");
         classes.setSchedule("19:10-20:50");
 
@@ -123,7 +123,7 @@ public class TimeRegistryServiceTest {
         timeRegistry.setUser(user);
         timeRegistry.setRegistryType(ActivityType.ENTRADA);
         timeRegistry.setDateTimeRegistry(LocalDateTime.of(2023, 11, 20, 19, 5));
-        timeRegistry.setClassName(classes.getDiscipline());
+        timeRegistry.setClasses(classes);
 
         List<TimeRegistry> timeRegistries = new ArrayList<>();
         timeRegistries.add(timeRegistry);
@@ -144,7 +144,7 @@ public class TimeRegistryServiceTest {
 
         classes.setId(51L);
         classes.setUser(user);
-        classes.setDiscipline("Sistemas de Comunicação");
+        classes.setName("Sistemas de Comunicação");
         classes.setClassDay("Segunda-feira");
         classes.setSchedule("19:10-20:50");
 
@@ -164,23 +164,23 @@ public class TimeRegistryServiceTest {
         User user = new User();
         user.setId(1L);
 
+        Classes classes = new Classes();
+
+        classes.setId(51L);
+        classes.setUser(user);
+        classes.setName("Sistemas de Comunicação");
+        classes.setClassDay("Segunda-feira");
+        classes.setSchedule("21:00-22:00");
+
         pointRegistry.setUser(user);
         pointRegistry.setRegistryType(ActivityType.SAIDA);
         pointRegistry.setDateTimeRegistry(LocalDateTime.of(2023, 11, 20, 20, 50));
-        pointRegistry.setClassName("");
+        pointRegistry.setClasses(classes);
 
         List<TimeRegistry> timeRegistry = new ArrayList<>();
         timeRegistry.add(pointRegistry);
 
         when(timeRegistryRepository.findByUserId(1L)).thenReturn(timeRegistry);
-
-        Classes classes = new Classes();
-
-        classes.setId(51L);
-        classes.setUser(user);
-        classes.setDiscipline("Sistemas de Comunicação");
-        classes.setClassDay("Segunda-feira");
-        classes.setSchedule("21:00-22:00");
 
         LocalDateTime now = LocalDateTime.of(2023, 11, 20, 21, 5);
 
@@ -194,23 +194,23 @@ public class TimeRegistryServiceTest {
         User user = new User();
         user.setId(1L);
 
+        Classes classes = new Classes();
+
+        classes.setId(51L);
+        classes.setUser(user);
+        classes.setName("Sistemas de Comunicação");
+        classes.setClassDay("Segunda-feira");
+        classes.setSchedule("21:00-22:00");
+
         pointRegistry.setUser(user);
         pointRegistry.setRegistryType(ActivityType.ATRASO);
         pointRegistry.setDateTimeRegistry(LocalDateTime.of(2023, 11, 20, 19, 50));
-        pointRegistry.setClassName("");
+        pointRegistry.setClasses(classes);
 
         List<TimeRegistry> timeRegistry = new ArrayList<>();
         timeRegistry.add(pointRegistry);
 
         when(timeRegistryRepository.findByUserId(1L)).thenReturn(timeRegistry);
-
-        Classes classes = new Classes();
-
-        classes.setId(51L);
-        classes.setUser(user);
-        classes.setDiscipline("Sistemas de Comunicação");
-        classes.setClassDay("Segunda-feira");
-        classes.setSchedule("21:00-22:00");
 
         LocalDateTime now = LocalDateTime.of(2023, 11, 20, 20, 55);
 
@@ -224,23 +224,23 @@ public class TimeRegistryServiceTest {
         User user = new User();
         user.setId(1L);
 
+        Classes classes = new Classes();
+
+        classes.setId(51L);
+        classes.setUser(user);
+        classes.setName("Sistemas de Comunicação");
+        classes.setClassDay("Segunda-feira");
+        classes.setSchedule("21:00-22:00");
+
         pointRegistry.setUser(user);
         pointRegistry.setRegistryType(ActivityType.SAIDA);
         pointRegistry.setDateTimeRegistry(LocalDateTime.of(2023, 11, 20, 20, 50));
-        pointRegistry.setClassName("");
+        pointRegistry.setClasses(classes);
 
         List<TimeRegistry> timeRegistry = new ArrayList<>();
         timeRegistry.add(pointRegistry);
 
         when(timeRegistryRepository.findByUserId(1L)).thenReturn(timeRegistry);
-
-        Classes classes = new Classes();
-
-        classes.setId(51L);
-        classes.setUser(user);
-        classes.setDiscipline("Sistemas de Comunicação");
-        classes.setClassDay("Segunda-feira");
-        classes.setSchedule("21:00-22:00");
 
         LocalDateTime now = LocalDateTime.of(2023, 11, 20, 21, 5);
 
@@ -252,24 +252,27 @@ public class TimeRegistryServiceTest {
         User user = new User();
         user.setId(1L);
 
-        TimeRegistry pointRegistry = new TimeRegistry();
-        pointRegistry.setUser(user);
-        pointRegistry.setRegistryType(ActivityType.ENTRADA);
-        pointRegistry.setDateTimeRegistry(LocalDateTime.of(2023, 11, 20, 21, 0));
-        pointRegistry.setClassName("");
-
-        List<TimeRegistry> timeRegistry = new ArrayList<>();
-
-        timeRegistry.add(pointRegistry);
-
         Classes classes = new Classes();
         classes.setId(51L);
         classes.setUser(user);
-        classes.setDiscipline("Sistemas de Comunicação");
+        classes.setName("Sistemas de Comunicação");
         classes.setClassDay("Segunda-feira");
         classes.setSchedule("21:00-22:00");
 
-        when(timeRegistryRepository.findByUserId(1L)).thenReturn(timeRegistry);
+
+        TimeRegistry timeRegistry = new TimeRegistry();
+        timeRegistry.setUser(user);
+        timeRegistry.setRegistryType(ActivityType.ENTRADA);
+        timeRegistry.setDateTimeRegistry(LocalDateTime.of(2023, 11, 20, 21, 0));
+        timeRegistry.setClasses(classes);
+
+        List<TimeRegistry> timeRegistries = new ArrayList<>();
+
+        timeRegistries.add(timeRegistry);
+
+
+
+        when(timeRegistryRepository.findByUserId(1L)).thenReturn(timeRegistries);
 
         LocalDateTime now = LocalDateTime.of(2023, 11, 20, 21, 5);
 
@@ -293,7 +296,6 @@ public class TimeRegistryServiceTest {
 
         classes.setId(51L);
         classes.setUser(user);
-        classes.setDiscipline("Sistemas de Comunicação");
         classes.setClassDay("Segunda-feira");
         classes.setSchedule("21:00-22:00");
 
@@ -307,7 +309,7 @@ public class TimeRegistryServiceTest {
             timeRegistryService.setActivityEntryType(now, userClasses, timeRegistry);
         });
 
-        String expectedException = new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existem aulas cadastradas para o horario atual!").getMessage();
+        String expectedException = new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não existem aulas cadastradas para o horario atual!").getMessage();
 
         assertEquals(expectedException, thrown.getMessage());
     }
@@ -322,21 +324,18 @@ public class TimeRegistryServiceTest {
         Classes classe1 = new Classes();
         classe1.setId(1L);
         classe1.setUser(user);
-        classe1.setDiscipline("Gerencia de Projetos de Ti");
         classe1.setClassDay("Quinta-feira");
         classe1.setSchedule("08:00-09:40");
 
         Classes classe2 = new Classes();
         classe2.setId(1L);
         classe2.setUser(user);
-        classe2.setDiscipline("Gerencia de Projetos de Ti");
         classe2.setClassDay("Quinta-feira");
         classe2.setSchedule("10:00-10:50");
 
         Classes classe3 = new Classes();
         classe3.setId(1L);
         classe3.setUser(user);
-        classe3.setDiscipline("Sistemas de Comunicação");
         classe3.setClassDay("Quinta-feira");
         classe3.setSchedule("21:00-22:40");
 
@@ -346,13 +345,13 @@ public class TimeRegistryServiceTest {
         userClasses.add(classe2);
         userClasses.add(classe3);
 
-        TimeRegistry pointRegistry = new TimeRegistry();
+        TimeRegistry timeRegistry = new TimeRegistry();
 
         Exception thrown = assertThrows(Exception.class, () -> {
-            timeRegistryService.setActivityEntryType(now, userClasses, pointRegistry);
+            timeRegistryService.setActivityEntryType(now, userClasses, timeRegistry);
         });
 
-        String expectedException = new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existem aulas cadastradas para o horario atual!").getMessage();
+        String expectedException = new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não existem aulas cadastradas para o horario atual!").getMessage();
 
         assertEquals(expectedException, thrown.getMessage());
     }

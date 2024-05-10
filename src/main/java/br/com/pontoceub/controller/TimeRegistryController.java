@@ -3,6 +3,8 @@ package br.com.pontoceub.controller;
 import br.com.pontoceub.domain.dto.TimeRegistryDTO;
 import br.com.pontoceub.domain.entities.Position;
 import br.com.pontoceub.service.TimeRegistryService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,5 +20,10 @@ public class TimeRegistryController extends AbstractController<TimeRegistryDTO, 
     @PostMapping("/create")
     public TimeRegistryDTO create() {
         return service.createPointRegistry();
+    }
+
+    @PostMapping("/registries")
+    public Page<TimeRegistryDTO> getRegistries(Pageable pageable) {
+        return service.getRegistries(pageable);
     }
 }

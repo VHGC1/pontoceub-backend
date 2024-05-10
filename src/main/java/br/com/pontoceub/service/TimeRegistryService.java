@@ -6,6 +6,8 @@ import br.com.pontoceub.domain.entities.Classes;
 import br.com.pontoceub.domain.entities.TimeRegistry;
 import br.com.pontoceub.repository.TimeRegistryRepository;
 import br.com.pontoceub.utils.ActivityType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -76,7 +78,6 @@ public class TimeRegistryService extends AbstractDTOService<TimeRegistryDTO, Tim
 
         Classes classes = classesService.dtoToEntity(currentClass);
 
-        timeRegistry.setClassName(classes.getDiscipline());
         timeRegistry.setClasses(classes);
         timeRegistry.setRegistryType(activityType(classes, localDateTime));
     }
@@ -124,17 +125,16 @@ public class TimeRegistryService extends AbstractDTOService<TimeRegistryDTO, Tim
 
         long diferencaBegin = ChronoUnit.MINUTES.between(begin, localDateTime);
 
-        List<TimeRegistry> pointRegistries = repo.findByUserId(classes.getUser().getId());
+        List<TimeRegistry> timeRegistries = repo.findByUserId(classes.getUser().getId());
 
-        if (pointRegistries.isEmpty()) {
+        if (timeRegistries.isEmpty()) {
             if (diferencaBegin > 15) {
                 return ActivityType.ATRASO;
             }
-
             return ActivityType.ENTRADA;
         }
 
-        TimeRegistry lastPointRegistry = pointRegistries.get(pointRegistries.size() - 1);
+        TimeRegistry lastPointRegistry = timeRegistries.get(timeRegistries.size() - 1);
 
         LocalDateTime lastRegistryTime = lastPointRegistry.getDateTimeRegistry();
 
@@ -170,5 +170,9 @@ public class TimeRegistryService extends AbstractDTOService<TimeRegistryDTO, Tim
         day.put("SUNDAY", "DOMINGO");
 
         return day.get(engDayOfWeek);
+    }
+
+    public Page<TimeRegistryDTO> getRegistries(Pageable pageable) {
+        return repo.getTimeRegistriesByUserId(pageable, userService.getUserIdFromRequest()).map(this::entityToDTO);
     }
 }

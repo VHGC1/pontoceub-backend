@@ -14,7 +14,6 @@ public class TimeRegistry implements BaseEntity<Long> {
     private Long id;
     private LocalDateTime dateTimeRegistry;
     private ActivityType registryType;
-    private String className;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
