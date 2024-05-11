@@ -57,7 +57,9 @@ public class ClassesService extends AbstractDTOService<ClassesDTO, Classes, Long
     }
 
     public List<ClassesDTO> createUserClasses(List<ClassesDTO> classes) {
-        Classes Userclasses = findEntityById(userService.getUserIdFromRequest());
+        Long userId = userService.getUserIdFromRequest();
+
+        userService.findEntityById(userId);
 
         for (ClassesDTO aClass : classes) {
             Classes newClasses = dtoToEntity(aClass);
@@ -65,7 +67,7 @@ public class ClassesService extends AbstractDTOService<ClassesDTO, Classes, Long
             repo.save(newClasses);
         }
 
-        return getUserClasses(Userclasses.getUser().getId());
+        return getUserClasses(userId);
     }
 
     public List<ClassesDTO> getUserClasses(Long id) {
