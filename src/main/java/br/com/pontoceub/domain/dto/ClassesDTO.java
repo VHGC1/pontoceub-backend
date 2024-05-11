@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ClassesDTO {
     private Long id;
-    private String discipline;
+    private String name;
     private String campus;
     private String classDay;
     private String schedule;
