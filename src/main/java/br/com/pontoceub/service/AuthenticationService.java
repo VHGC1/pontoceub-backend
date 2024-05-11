@@ -3,6 +3,7 @@ package br.com.pontoceub.service;
 import br.com.pontoceub.Security.JwtService;
 import br.com.pontoceub.Security.UserAuthenticated;
 import br.com.pontoceub.Security.UserDetailsServiceImpl;
+import br.com.pontoceub.domain.dto.TokenDTO;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,13 +21,16 @@ public class AuthenticationService {
         this.userDetailsService = userDetailsService;
     }
 
-    public String authenticate(String email, String password) {
+    public TokenDTO authenticate(String email, String password) {
         UserDetails user = userDetailsService.loadUserByUsername(email);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
 
-        return jwtService.generateToken((UserAuthenticated) user);
+        TokenDTO tokenDTO = new TokenDTO();
+        tokenDTO.setToken(jwtService.generateToken((UserAuthenticated) user));
+
+        return tokenDTO;
     }
 }

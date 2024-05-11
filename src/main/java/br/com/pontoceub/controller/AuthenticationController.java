@@ -1,6 +1,7 @@
 package br.com.pontoceub.controller;
 
 import br.com.pontoceub.domain.dto.LoginRequestDTO;
+import br.com.pontoceub.domain.dto.TokenDTO;
 import br.com.pontoceub.service.AuthenticationService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +16,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String authenticate(@RequestBody LoginRequestDTO loginRequest) {
+    public TokenDTO authenticate(@RequestBody LoginRequestDTO loginRequest) {
         return authenticationService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
     }
 }

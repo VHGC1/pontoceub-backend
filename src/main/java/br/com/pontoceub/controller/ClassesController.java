@@ -15,9 +15,9 @@ public class ClassesController extends AbstractController<ClassesDTO, Long, Clas
         super(service);
     }
 
-    @PostMapping("/user/{id}")
-    public List<ClassesDTO> createUserClasses(@PathVariable("id") Long id, @RequestBody List<ClassesDTO> classes) {
-        return service.createUserClasses(id, classes);
+    @PostMapping("/user/")
+    public List<ClassesDTO> createUserClasses(@RequestBody List<ClassesDTO> classes) {
+        return service.createUserClasses(classes);
     }
 
     @GetMapping("/user")
