@@ -8,9 +8,8 @@ import java.time.LocalDateTime;
 @Data
 public class TimeRegistryDTO {
     private Long id;
-    private ActivityType activityType;
     private LocalDateTime dateTimeRegistry;
-    private String activity;
+    private ActivityType activityType;
     private Long userId;
-    private Long classesId;
+    private ClassesDTO classes;
 }

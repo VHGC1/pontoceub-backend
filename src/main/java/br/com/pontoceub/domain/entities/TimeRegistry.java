@@ -19,7 +19,7 @@ public class TimeRegistry implements BaseEntity<Long> {
     @JoinColumn(name="user_id")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classes_id")
     private Classes classes;
 

@@ -3,6 +3,8 @@ package br.com.pontoceub.domain.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "classes")
@@ -18,6 +20,9 @@ public class Classes implements BaseEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "classes", fetch = FetchType.LAZY)
+    private List<TimeRegistry> timeRegistryList;
 
     @Override
     public Long getId() {
