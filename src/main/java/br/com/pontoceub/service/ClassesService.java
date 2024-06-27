@@ -33,8 +33,13 @@ public class ClassesService extends AbstractDTOService<ClassesDTO, Classes, Long
                 .map(WeekDayEnum::fromValue)
                 .sorted()
                 .map(WeekDayEnum::toString)
-                .map(i -> i.toLowerCase() + "-feira").toList();
-        ;
+                .map(i -> {
+                    String day = i.toLowerCase();
+                    if (!day.equals("sábado")) {
+                        day += "-feira";
+                    }
+                    return day;
+                }).toList();
 
         for (String uniqueClassDay : uniqueClassDays) {
             ClassesByDayDTO classByDay = new ClassesByDayDTO();
