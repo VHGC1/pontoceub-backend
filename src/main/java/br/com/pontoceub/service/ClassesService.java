@@ -35,7 +35,8 @@ public class ClassesService extends AbstractDTOService<ClassesDTO, Classes, Long
                 .map(WeekDayEnum::toString)
                 .map(i -> {
                     String day = i.toLowerCase();
-                    if (!day.equals("sábado")) {
+                    System.out.println(day);
+                    if (!day.equals("sabado")) {
                         day += "-feira";
                     }
                     return day;
